@@ -8,6 +8,7 @@ pub mod battery;
 mod custom;
 mod disk_space;
 mod pacman;
+mod pamac;
 mod temperature;
 mod toggle;
 mod sound;
@@ -37,6 +38,7 @@ use self::battery::*;
 use self::custom::*;
 use self::disk_space::*;
 use self::pacman::*;
+use self::pamac::*;
 use self::sound::*;
 use self::speedtest::*;
 use self::toggle::*;
@@ -93,6 +95,7 @@ pub fn create_block(name: &str, block_config: Value, config: Config, tx_update_r
             "memory" => Memory,
             "cpu" => Cpu,
             "pacman" => Pacman,
+            "pamac" => Pamac,
             "battery" => Battery,
             "custom" => Custom,
             "disk_space" => DiskSpace,

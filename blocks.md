@@ -16,6 +16,7 @@
 - [Net](#net)
 - [Nvidia Gpu](#nvidia-gpu)
 - [Pacman](#pacman)
+- [Pamac](#pamac)
 - [Sound](#sound)
 - [Speed Test](#speed-test)
 - [Temperature](#temperature)
@@ -552,6 +553,26 @@ Update the list of pending updates every ten seconds:
 ```toml
 [[block]]
 block = "pacman"
+interval = 10
+```
+
+### Options
+
+Key | Values | Required | Default
+----|--------|----------|--------
+`interval` | Update interval, in seconds. | No | `600` (10min)
+
+## Pamac
+
+Creates a block which displays the pending updates available on pamac.
+
+### Examples
+
+Update the list of pending updates every ten seconds:
+
+```toml
+[[block]]
+block = "pamac"
 interval = 10
 ```
 
