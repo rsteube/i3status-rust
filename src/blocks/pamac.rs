@@ -63,7 +63,10 @@ fn get_update_count() -> Result<usize> {
 impl Block for Pamac {
     fn update(&mut self) -> Result<Option<Duration>> {
         let count = get_update_count()?;
-        self.output.set_text(format!("{}", count));
+        self.output.set_text(match count {
+            0 => "".to_owned(),
+            _ => format!("{}", count),
+        });
         self.output.set_state(match count {
             0 => State::Idle,
             _ => State::Info,
