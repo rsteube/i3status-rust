@@ -103,10 +103,7 @@ impl NetworkDevice {
         let mut iw_output = Command::new("sh")
             .args(&[
                 "-c",
-                &format!(
-                    "iw dev {} link | sed -n 's/^\\s\\+SSID: \\(.*\\)/\\1/p'",
-                    self.device
-                ),
+                "nmcli -t -f in-use,ssid dev wifi | grep '^*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute SSID query.")?
@@ -130,7 +127,7 @@ impl NetworkDevice {
         }
     }
 
-    fn absolute_signal_strength(&self) -> Result<Option<i32>> {
+    fn relative_signal_strength(&self) -> Result<Option<i32>> {
         let up = self.is_up()?;
         if !self.wireless || !up {
             return Err(BlockError(
@@ -142,10 +139,7 @@ impl NetworkDevice {
         let mut iw_output = Command::new("sh")
             .args(&[
                 "-c",
-                &format!(
-                    "iw dev {} link | sed -n 's/^\\s\\+signal: \\(.*\\) dBm/\\1/p'",
-                    self.device
-                ),
+                "nmcli -t -f in-use,signal dev wifi | grep '^*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute signal strength query.")?
@@ -160,30 +154,6 @@ impl NetworkDevice {
                     .block_error("net", "Non numerical signal strength."))
                 .map(Some)
         }
-    }
-
-    fn relative_signal_strength(&self) -> Result<Option<u32>> {
-        let xbm = if let Some(xbm) = self.absolute_signal_strength()? {
-            xbm as f64
-        } else {
-            return Ok(None);
-        };
-
-        // Code inspired by https://github.com/NetworkManager/NetworkManager/blob/master/src/platform/wifi/nm-wifi-utils-nl80211.c
-        const NOISE_FLOOR_DBM: f64 = -90.;
-        const SIGNAL_MAX_DBM: f64 = -20.;
-
-        let xbm = if xbm < NOISE_FLOOR_DBM {
-            NOISE_FLOOR_DBM
-        } else if xbm > SIGNAL_MAX_DBM {
-            SIGNAL_MAX_DBM
-        } else {
-            xbm
-        };
-
-        let result = 100. - 70. * ((SIGNAL_MAX_DBM - xbm) / (SIGNAL_MAX_DBM - NOISE_FLOOR_DBM));
-        let result = result as u32;
-        Ok(Some(result))
     }
 
     /// Queries the inet IP of this device (using `ip`).
@@ -228,10 +198,7 @@ impl NetworkDevice {
         let mut bitrate_output = Command::new("sh")
             .args(&[
                 "-c",
-                &format!(
-                    "iw dev {} link | awk '/tx bitrate/ {{print $3\" \"$4}}'",
-                    self.device
-                ),
+                "nmcli -t -f in-use,rate dev wifi | grep '^*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute bitrate query.")?
