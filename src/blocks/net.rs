@@ -103,7 +103,7 @@ impl NetworkDevice {
         let mut iw_output = Command::new("sh")
             .args(&[
                 "-c",
-                "nmcli -t -f in-use,ssid dev wifi | grep '^*' | cut -c3-"
+                "nmcli -t -f in-use,ssid dev wifi | grep '^\\*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute SSID query.")?
@@ -139,7 +139,7 @@ impl NetworkDevice {
         let mut iw_output = Command::new("sh")
             .args(&[
                 "-c",
-                "nmcli -t -f in-use,signal dev wifi | grep '^*' | cut -c3-"
+                "nmcli -t -f in-use,signal dev wifi | grep '^\\*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute signal strength query.")?
@@ -198,7 +198,7 @@ impl NetworkDevice {
         let mut bitrate_output = Command::new("sh")
             .args(&[
                 "-c",
-                "nmcli -t -f in-use,rate dev wifi | grep '^*' | cut -c3-"
+                "nmcli -t -f in-use,rate dev wifi | grep '^\\*' | cut -c3-"
             ])
             .output()
             .block_error("net", "Failed to execute bitrate query.")?
